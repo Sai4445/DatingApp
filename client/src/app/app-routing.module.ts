@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
@@ -18,7 +18,7 @@ const routes: Routes = [
    canActivate:[AuthGuard], 
    children:[
     {path :'members',component:MemberListComponent,canActivate:[AuthGuard]},
-  {path :'members/:id',component:MemberDetailComponent},
+  {path :'members/:username',component:MemberDetailComponent},
   {path :'lists',component:ListsComponent},
   {path :'messages',component:MessagesComponent},
   
