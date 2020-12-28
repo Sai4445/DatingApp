@@ -1,4 +1,5 @@
 
+using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,11 +35,17 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return new UserDto{
-                Username = user.UserName,
+                UserName = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
 
         }
+
+        private Task<bool> UserExits(object userName)
+        {
+            throw new NotImplementedException();
+        }
+
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
@@ -51,7 +58,7 @@ namespace API.Controllers
                 if (ComputeHash[i] != user.PasswordHash[i]) return Unauthorized("invalid password");
             }
               return new UserDto{
-                Username = user.UserName,
+                UserName = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
         }
