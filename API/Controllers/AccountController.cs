@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return new UserDto{
-                UserName = user.UserName,
+                Username = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
 
@@ -58,8 +59,9 @@ namespace API.Controllers
                 if (ComputeHash[i] != user.PasswordHash[i]) return Unauthorized("invalid password");
             }
               return new UserDto{
-                UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Username = user.UserName,
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x =>x.IsMain)?.Url
             };
         }
         private async Task<bool> UserExits(string UserName)
