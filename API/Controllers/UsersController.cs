@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+ 
 namespace API.Controllers
 {
     [Authorize]
@@ -29,10 +29,10 @@ namespace API.Controllers
             _photoService = photoService;
             _mapper = mapper;
             _userRepository = userRepository;
-
+ 
         }
         [HttpGet]
-
+ 
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
         {
             var user =await _userRepository.GetUserByUsernameAsync(User.GetUsername());
@@ -43,24 +43,24 @@ namespace API.Controllers
             Response.AddPaginationHeader(users.CurrentPage,users.PageSize,users.TotalCount,users.TotalPages);
             return Ok(users);
         }
-
+ 
         [HttpGet("{username}", Name = "GetUser" )]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             return await _userRepository.GetMemberAsync(username);
-
-
+ 
+ 
         }
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
         {
-
+ 
             var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
             _mapper.Map(memberUpdateDto, user);
-
+ 
             _userRepository.Update(user);
             if (await _userRepository.SaveAllAsync()) return NoContent();
-
+ 
             return BadRequest("failed to update user");
         }
         [HttpPost("add-photo")]
@@ -93,7 +93,7 @@ namespace API.Controllers
             var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
             var photo = user.Photos.FirstOrDefault(x =>x.Id ==photoId); 
             if( photo.IsMain) return BadRequest("this is already your main photo");
-
+ 
             var currentMain = user.Photos.FirstOrDefault(x =>x.IsMain);
             if(currentMain != null) currentMain.IsMain = false;
             photo.IsMain = true;
@@ -110,7 +110,7 @@ namespace API.Controllers
             if(photo.PublicId!= null){
                var result= await _photoService.DeletePhotoAsync(photo.PublicId);
                if(result.Error != null ) return BadRequest(result.Error.Message);
-
+ 
             }
             user.Photos.Remove(photo);
             if( await _userRepository.SaveAllAsync())  return Ok();
@@ -118,3 +118,6 @@ namespace API.Controllers
         }
     }
 }
+ 
+ 
+ 
